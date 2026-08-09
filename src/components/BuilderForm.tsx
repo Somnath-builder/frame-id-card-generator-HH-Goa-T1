@@ -14,15 +14,18 @@ export function BuilderForm({ userData, setUserData }: BuilderFormProps) {
   };
 
   return (
-    <div className="relative font-mono">
-      <div className="absolute -top-3 left-4 bg-background px-2 text-[10px] text-accent tracking-[0.2em] z-10 uppercase">
-        01 / INPUT DATA
+    <div className="relative font-sans glass-panel p-6 sm:p-8 space-y-6">
+      <div className="flex items-center gap-2 mb-6">
+        <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+        <h3 className="text-xs font-bold text-white/70 uppercase tracking-widest">
+          Identity Data
+        </h3>
       </div>
       
-      <div className="border border-border bg-black/20 p-6 pt-8 space-y-6">
+      <div className="space-y-6">
         <div>
-          <label htmlFor="name" className="block text-[10px] text-muted-foreground uppercase tracking-widest mb-2">
-            BUILDER NAME
+          <label htmlFor="name" className="block text-xs text-white/60 uppercase tracking-widest mb-2 font-medium">
+            Builder Name
           </label>
           <input
             type="text"
@@ -32,40 +35,40 @@ export function BuilderForm({ userData, setUserData }: BuilderFormProps) {
             value={userData.name}
             onChange={handleChange}
             maxLength={20}
-            className="w-full bg-black/50 border border-border focus:border-accent text-white px-4 py-3 text-sm focus:outline-none transition-colors rounded-none placeholder:text-muted-foreground/50 font-sans font-bold"
+            className="w-full bg-black/30 border border-white/10 focus:border-accent text-white px-5 py-4 rounded-xl text-sm focus:outline-none transition-colors placeholder:text-white/30 font-bold shadow-inner"
           />
         </div>
         
         <div>
-          <label htmlFor="role" className="block text-[10px] text-muted-foreground uppercase tracking-widest mb-2">
-            STACK / ROLE
+          <label htmlFor="role" className="block text-xs text-white/60 uppercase tracking-widest mb-2 font-medium">
+            Primary Role / Stack
           </label>
           <input
             type="text"
             id="role"
             name="role"
-            placeholder="e.g. FULL STACK HACKER"
+            placeholder="e.g. Full Stack Hacker"
             value={userData.role}
             onChange={handleChange}
             maxLength={30}
-            className="w-full bg-black/50 border border-border focus:border-accent text-white px-4 py-3 text-sm focus:outline-none transition-colors rounded-none placeholder:text-muted-foreground/50 font-sans uppercase"
+            className="w-full bg-black/30 border border-white/10 focus:border-accent text-white px-5 py-4 rounded-xl text-sm focus:outline-none transition-colors placeholder:text-white/30 font-bold uppercase shadow-inner"
           />
         </div>
         
         <div>
-          <label htmlFor="tagline" className="block text-[10px] text-muted-foreground uppercase tracking-widest mb-2 flex justify-between">
-            <span>TAGLINE (OPTIONAL)</span>
-            <span className="text-muted-foreground/50">MAX 40</span>
+          <label htmlFor="tagline" className="block text-xs text-white/60 uppercase tracking-widest mb-2 font-medium flex justify-between">
+            <span>Tagline (Optional)</span>
+            <span className="text-white/30">Max 40</span>
           </label>
           <input
             type="text"
             id="tagline"
             name="tagline"
-            placeholder="Less Noise. More Signal."
+            placeholder="Building the future."
             value={userData.tagline}
             onChange={handleChange}
             maxLength={40}
-            className="w-full bg-black/50 border border-border focus:border-accent text-white px-4 py-3 text-sm focus:outline-none transition-colors rounded-none placeholder:text-muted-foreground/50 font-sans italic"
+            className="w-full bg-black/30 border border-white/10 focus:border-accent text-white px-5 py-4 rounded-xl text-sm focus:outline-none transition-colors placeholder:text-white/30 font-light italic shadow-inner"
           />
         </div>
       </div>

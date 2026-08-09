@@ -43,7 +43,7 @@ export default function Home() {
     setTimeout(() => {
       setIsLockingAnimation(false);
       setIsLocked(true);
-    }, 1500); // Signature moment duration
+    }, 2500); // Extended for cinematic feel
   };
 
   const handleDownload = () => {
@@ -58,7 +58,7 @@ export default function Home() {
 
   const handleShare = () => {
     handleDownload();
-    const text = `I just locked my builder identity for Hacker House Goa 2026.\n\nLess noise. More signal.\n\n#FrameInGoa @hackerhousegoa`;
+    const text = `I just got my ticket to Hacker House Goa 2026.\n\nSee you on the beach.\n\n#FrameInGoa @hackerhousegoa`;
     const xUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}`;
     setTimeout(() => {
       window.open(xUrl, "_blank");
@@ -68,30 +68,38 @@ export default function Home() {
   return (
     <>
       <LayeredBackground />
-      <CustomCursor />
-      <AmbientTerminal />
       
-      {/* Signature Moment Overlay */}
+      {/* Signature Moment Overlay: Warm Sunset Pulse */}
       <AnimatePresence>
         {isLockingAnimation && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md pointer-events-none"
           >
+            {/* The Outward Pulse */}
             <motion.div
-              animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 180] }}
-              transition={{ duration: 1, ease: "easeInOut" }}
-              className="w-16 h-16 border-2 border-accent border-t-transparent rounded-full mb-8"
+              initial={{ scale: 0, opacity: 1 }}
+              animate={{ scale: 20, opacity: 0 }}
+              transition={{ duration: 2, ease: "easeOut" }}
+              className="absolute w-64 h-64 rounded-full pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, rgba(255,81,47,0.8) 0%, rgba(255,81,47,0) 70%)"
+              }}
             />
+            
+            {/* The Text Reveal */}
             <motion.div
-              initial={{ letterSpacing: "10px", opacity: 0 }}
-              animate={{ letterSpacing: "2px", opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-2xl font-mono text-accent uppercase tracking-widest font-bold"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
+              className="font-sans text-center space-y-4 relative z-10"
             >
-              SIGNAL LOCKED
+              <h2 className="text-5xl md:text-7xl font-display font-black tracking-tight goa-gradient-text uppercase">
+                IDENTITY LOCKED
+              </h2>
+              <p className="text-xl md:text-2xl font-light tracking-[0.2em] text-white">See you in Goa.</p>
             </motion.div>
           </motion.div>
         )}
@@ -130,7 +138,7 @@ export default function Home() {
                 >
                   <button
                     onClick={handleLockSignal}
-                    className="w-full bg-accent text-accent-foreground font-bold uppercase tracking-widest py-5 px-6 rounded-none border border-accent hover:bg-[#00cc33] transition-all flex items-center justify-center gap-3 group"
+                    className="w-full goa-gradient text-white font-bold uppercase tracking-widest py-5 px-6 rounded-2xl hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(255,81,47,0.3)] hover:shadow-[0_10px_40px_rgba(255,81,47,0.5)] group"
                   >
                     <Lock className="w-5 h-5 group-hover:scale-110 transition-transform" />
                     LOCK IDENTITY
@@ -144,20 +152,20 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   className="pt-4 space-y-4"
                 >
-                  <div className="text-center font-mono text-accent text-sm tracking-widest mb-4">
-                    BUILDER IDENTITY LOCKED.<br/>READY TO SHIP.
+                  <div className="text-center font-sans font-light text-white/70 text-sm tracking-widest mb-4 uppercase">
+                    Your Goa Identity is ready.
                   </div>
                   <div className="flex flex-col sm:flex-row gap-4">
                     <button
                       onClick={handleDownload}
-                      className="flex-1 bg-white text-black font-bold uppercase tracking-widest py-4 px-6 rounded-none border border-white hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
+                      className="flex-1 bg-white text-black font-bold uppercase tracking-widest py-4 px-6 rounded-2xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 shadow-lg"
                     >
                       <Download className="w-5 h-5" />
                       DOWNLOAD
                     </button>
                     <button
                       onClick={handleShare}
-                      className="flex-1 bg-transparent text-white font-bold uppercase tracking-widest py-4 px-6 rounded-none border border-white hover:bg-white hover:text-black transition-colors flex items-center justify-center gap-2"
+                      className="flex-1 glass-panel text-white font-bold uppercase tracking-widest py-4 px-6 rounded-2xl hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
                     >
                       <Share2 className="w-5 h-5" />
                       SHARE ON X

@@ -1,103 +1,88 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 export function LayeredBackground() {
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
   return (
-    <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-background">
+    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-background">
       
-      {/* LAYER 1: Very fine technical grid (faint) */}
-      <div 
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, #ffffff 1px, transparent 1px),
-            linear-gradient(to bottom, #ffffff 1px, transparent 1px)
-          `,
-          backgroundSize: '24px 24px',
-        }}
-      />
-
-      {/* LAYER 2: Larger coordinate grid (very faint) */}
-      <div 
-        className="absolute inset-0 opacity-[0.02]"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, #00ff41 1px, transparent 1px),
-            linear-gradient(to bottom, #00ff41 1px, transparent 1px)
-          `,
-          backgroundSize: '120px 120px',
-        }}
-      />
-
-      {/* LAYER 3: Radial Glow (Animated imperceptibly) */}
+      {/* 1. Deep Sunset Gradient Mesh */}
       <motion.div 
-        className="absolute w-[800px] h-[800px] rounded-full blur-[100px] opacity-[0.05]"
+        className="absolute inset-0 opacity-40"
         style={{
-          background: 'radial-gradient(circle, var(--color-cyan) 0%, transparent 70%)',
-          top: '20%',
-          left: '30%',
+          background: `
+            radial-gradient(circle at 20% 80%, rgba(255, 81, 47, 0.4) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(72, 202, 228, 0.3) 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, rgba(240, 152, 25, 0.2) 0%, transparent 60%)
+          `
         }}
-        animate={{
-          x: [0, 50, -50, 0],
-          y: [0, 30, -30, 0],
-          scale: [1, 1.1, 0.9, 1],
+        animate={{ 
+          backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
         }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear",
-        }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
       />
       
-      <motion.div 
-        className="absolute w-[600px] h-[600px] rounded-full blur-[100px] opacity-[0.03]"
-        style={{
-          background: 'radial-gradient(circle, var(--color-accent) 0%, transparent 70%)',
-          bottom: '10%',
-          right: '20%',
-        }}
-        animate={{
-          x: [0, -40, 40, 0],
-          y: [0, -20, 20, 0],
-          scale: [1, 1.2, 0.8, 1],
-        }}
-        transition={{
-          duration: 25,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
+      {/* 2. Abstract Ocean Waveforms */}
+      <motion.div
+        className="absolute inset-0 flex items-end justify-center opacity-60 mix-blend-screen"
+      >
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-[60vh]">
+          <motion.path 
+            d="M0,50 Q25,30 50,50 T100,50 L100,100 L0,100 Z" 
+            fill="url(#sunsetGrad1)" 
+            animate={{ 
+              d: [
+                "M0,50 Q25,30 50,50 T100,50 L100,100 L0,100 Z",
+                "M0,50 Q25,70 50,50 T100,50 L100,100 L0,100 Z",
+                "M0,50 Q25,30 50,50 T100,50 L100,100 L0,100 Z"
+              ]
+            }}
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.path 
+            d="M0,60 Q30,80 60,60 T100,60 L100,100 L0,100 Z" 
+            fill="url(#sunsetGrad2)" 
+            animate={{ 
+              d: [
+                "M0,60 Q30,80 60,60 T100,60 L100,100 L0,100 Z",
+                "M0,60 Q30,40 60,60 T100,60 L100,100 L0,100 Z",
+                "M0,60 Q30,80 60,60 T100,60 L100,100 L0,100 Z"
+              ]
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <defs>
+            <linearGradient id="sunsetGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="rgba(72, 202, 228, 0.25)" />
+              <stop offset="100%" stopColor="rgba(0, 119, 182, 0.1)" />
+            </linearGradient>
+            <linearGradient id="sunsetGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="rgba(0, 119, 182, 0.2)" />
+              <stop offset="100%" stopColor="rgba(72, 202, 228, 0.3)" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </motion.div>
 
-      {/* LAYER 4: Grain / Noise Texture */}
+      {/* Persistent Goa Coordinates Overlay (Softened) */}
+      <div className="absolute top-1/4 right-8 font-sans text-xs text-white/50 tracking-[0.2em] text-right flex flex-col items-end">
+        <span>15°29′N</span>
+        <span>73°49′E</span>
+        <span className="mt-2 w-8 h-[1px] bg-white/20" />
+      </div>
+
+      <div className="absolute bottom-1/4 left-8 font-sans text-xs text-white/50 tracking-[0.2em] flex flex-col items-start">
+        <span className="w-8 h-[1px] bg-white/20 mb-2" />
+        <span>GOA / INDIA</span>
+        <span>28—31 OCT 2026</span>
+      </div>
+
+      {/* Soft CSS Noise Grain Overlay */}
       <div 
-        className="absolute inset-0 opacity-[0.15] mix-blend-overlay"
+        className="absolute inset-0 opacity-[0.05] mix-blend-overlay"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
         }}
-      />
-      
-      {/* LAYER 5: Extremely subtle animated signal paths (vertical/horizontal lines that scan) */}
-      <motion.div
-        className="absolute top-0 bottom-0 w-[1px] bg-accent/20"
-        initial={{ left: '-10%' }}
-        animate={{ left: '110%' }}
-        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-      />
-      <motion.div
-        className="absolute left-0 right-0 h-[1px] bg-cyan/10"
-        initial={{ top: '-10%' }}
-        animate={{ top: '110%' }}
-        transition={{ duration: 25, repeat: Infinity, ease: "linear", delay: 5 }}
       />
     </div>
   );

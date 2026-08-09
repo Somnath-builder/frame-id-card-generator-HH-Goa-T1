@@ -11,41 +11,37 @@ interface FormatSelectorProps {
 export function FormatSelector({ format, setFormat }: FormatSelectorProps) {
   return (
     <div className="flex justify-center mb-8">
-      <div className="flex border border-border p-1 bg-black/40 backdrop-blur-md">
+      <div className="flex p-1.5 glass-panel rounded-full">
         <button
           onClick={() => setFormat("PFP")}
-          className={`relative px-6 py-3 text-sm font-mono tracking-[0.1em] transition-colors ${
-            format === "PFP" ? "text-black" : "text-muted-foreground hover:text-white"
+          className={`relative px-8 py-3 text-sm font-sans font-medium transition-colors rounded-full ${
+            format === "PFP" ? "text-white" : "text-white/50 hover:text-white"
           }`}
         >
           {format === "PFP" && (
             <motion.div
               layoutId="active-format"
-              className="absolute inset-0 bg-accent -z-10"
+              className="absolute inset-0 goa-gradient rounded-full -z-10"
               transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
             />
           )}
-          <span className="flex items-center gap-2 font-bold uppercase">
-            <span className="text-lg leading-none">◉</span> FRAME MODE
-          </span>
+          <span className="relative z-10 uppercase tracking-wider">FRAME MODE</span>
         </button>
         
         <button
           onClick={() => setFormat("BUILDER")}
-          className={`relative px-6 py-3 text-sm font-mono tracking-[0.1em] transition-colors ${
-            format === "BUILDER" ? "text-black" : "text-muted-foreground hover:text-white"
+          className={`relative px-8 py-3 text-sm font-sans font-medium transition-colors rounded-full ${
+            format === "BUILDER" ? "text-white" : "text-white/50 hover:text-white"
           }`}
         >
           {format === "BUILDER" && (
             <motion.div
               layoutId="active-format"
-              className="absolute inset-0 bg-accent -z-10"
+              className="absolute inset-0 goa-gradient rounded-full -z-10"
               transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
             />
           )}
-          <span className="flex items-center gap-2 font-bold uppercase">
-            <span className="text-lg leading-none">◇</span> BUILDER MODE
-          </span>
+          <span className="relative z-10 uppercase tracking-wider">BUILDER ID</span>
         </button>
       </div>
     </div>

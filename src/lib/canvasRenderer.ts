@@ -41,32 +41,30 @@ function drawImageCenterCrop(
     srcY = (img.height - srcH) / 2;
   }
 
-  // Draw image slightly desaturated/cool to fit the theme
+  // Draw image in full natural color
   ctx.save();
+  // Optional: add a slight warmth to the photo using a very soft overlay
   ctx.drawImage(img, srcX, srcY, srcW, srcH, x, y, w, h);
-  // Apply a very subtle color burn overlay to merge it with the background
-  ctx.fillStyle = "rgba(0, 229, 255, 0.05)"; // subtle cyan tint
-  ctx.globalCompositeOperation = "color-burn";
+  ctx.fillStyle = "rgba(255, 142, 83, 0.05)"; // extremely subtle warm tint
+  ctx.globalCompositeOperation = "overlay";
   ctx.fillRect(x, y, w, h);
   ctx.restore();
 }
 
-const BRAND_ACCENT = "#00ff41"; // Electric Green
-const BG_DARK = "#030303"; // Deep Black
-const BG_SECONDARY = "#0a0a0a"; // Graphite
-const TEXT_WHITE = "#f4f4f5";
-const TEXT_MUTED = "#888888";
-const TEXT_CYAN = "#00e5ff"; // Subtle Cyan
+// Sunset / Ocean Palette
+const BRAND_ACCENT = "#FF512F"; // Sunset Orange
+const BRAND_SECONDARY = "#F09819"; // Warm Yellow
+const BG_DARK = "#0B0914"; // Deep Twilight
+const BG_CARD = "#161224"; // Glass Panel Background
+const TEXT_WHITE = "#F8F9FA";
+const TEXT_MUTED = "#A09DB0";
+const TEXT_CYAN = "#48CAE4"; // Ocean Cyan
 
-function drawCrosshair(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, color: string) {
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(x - size, y);
-  ctx.lineTo(x + size, y);
-  ctx.moveTo(x, y - size);
-  ctx.lineTo(x, y + size);
-  ctx.stroke();
+function createGoaGradient(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+  const grad = ctx.createLinearGradient(x, y, x + w, y + h);
+  grad.addColorStop(0, BRAND_ACCENT);
+  grad.addColorStop(1, BRAND_SECONDARY);
+  return grad;
 }
 
 export async function renderPfpFrame(
@@ -84,7 +82,7 @@ export async function renderPfpFrame(
   ctx.fillStyle = BG_DARK;
   ctx.fillRect(0, 0, width, height);
 
-  const border = 80;
+  const border = 60;
   if (imgUrl) {
     try {
       const img = await loadImage(imgUrl);
@@ -101,62 +99,56 @@ export async function renderPfpFrame(
     }
   }
 
-  // Draw main frame border
-  ctx.strokeStyle = TEXT_WHITE;
-  ctx.lineWidth = 6;
+  // Soft glowing border instead of stark lines
+  ctx.strokeStyle = createGoaGradient(ctx, border, border, width, height);
+  ctx.lineWidth = 12;
+  ctx.lineJoin = "round";
+  ctx.shadowColor = BRAND_ACCENT;
+  ctx.shadowBlur = 20;
   ctx.strokeRect(border, border, width - border * 2, height - border * 2);
-
-  // Crosshairs
-  const chSize = 25;
-  drawCrosshair(ctx, border, border, chSize, BRAND_ACCENT);
-  drawCrosshair(ctx, width - border, border, chSize, BRAND_ACCENT);
-  drawCrosshair(ctx, border, height - border, chSize, BRAND_ACCENT);
-  drawCrosshair(ctx, width - border, height - border, chSize, BRAND_ACCENT);
-
-  // Cryptographic metadata top right
-  ctx.fillStyle = BRAND_ACCENT;
-  ctx.font = "bold 16px 'Space Grotesk', monospace";
-  ctx.textAlign = "right";
-  ctx.fillText("HHG/26", width - border - 15, border + 30);
-  ctx.fillText("NODE: GOA", width - border - 15, border + 50);
-  ctx.fillText("SIG: 7F2A", width - border - 15, border + 70);
-
-  // Left vertical text
-  ctx.save();
-  ctx.translate(35, height / 2);
-  ctx.rotate(-Math.PI / 2);
-  ctx.fillStyle = TEXT_WHITE;
-  ctx.font = "bold 20px 'Space Grotesk', monospace";
-  ctx.textAlign = "center";
-  ctx.letterSpacing = "4px";
-  ctx.fillText("LESS NOISE. MORE SIGNAL.", 0, 0);
-  ctx.restore();
-
-  // Bottom Branding Box
-  ctx.fillStyle = BG_DARK;
-  ctx.fillRect(border, height - border - 140, width - border * 2, 140);
   
-  ctx.strokeStyle = TEXT_WHITE;
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.moveTo(border, height - border - 140);
-  ctx.lineTo(width - border, height - border - 140);
-  ctx.stroke();
+  // Reset shadow
+  ctx.shadowBlur = 0;
 
+  // Modern soft corner accents
   ctx.fillStyle = TEXT_WHITE;
-  ctx.font = "600 76px 'Oswald', sans-serif";
+  const corners = [
+    [border, border],
+    [width - border, border],
+    [border, height - border],
+    [width - border, height - border]
+  ];
+  
+  corners.forEach(([cx, cy]) => {
+    ctx.beginPath();
+    ctx.arc(cx, cy, 16, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Subtle Goa coordinates top right
+  ctx.fillStyle = TEXT_WHITE;
+  ctx.font = "bold 18px 'Inter', sans-serif";
+  ctx.textAlign = "right";
+  ctx.fillText("15°29′N / 73°49′E", width - border - 30, border + 40);
+
+  // Bottom Branding Glass Box
+  ctx.fillStyle = "rgba(22, 18, 36, 0.85)"; // Translucent card
+  ctx.fillRect(border + 20, height - border - 160, width - border * 2 - 40, 140);
+  
+  ctx.fillStyle = TEXT_WHITE;
+  ctx.font = "800 76px 'Oswald', sans-serif";
   ctx.textAlign = "left";
   ctx.letterSpacing = "2px";
-  ctx.fillText("HH GOA 2026", border + 30, height - border - 45);
+  ctx.fillText("HH GOA 2026", border + 50, height - border - 60);
 
-  ctx.fillStyle = BRAND_ACCENT;
-  ctx.font = "bold 24px 'Space Grotesk', monospace";
+  ctx.fillStyle = createGoaGradient(ctx, border, border, width, height);
+  ctx.font = "bold 26px 'Inter', sans-serif";
   ctx.textAlign = "right";
-  ctx.fillText("AI × CRYPTO", width - border - 30, height - border - 80);
+  ctx.fillText("AI × CRYPTO × BUILDERS", width - border - 50, height - border - 90);
   
   ctx.fillStyle = TEXT_MUTED;
-  ctx.font = "500 18px 'Space Grotesk', monospace";
-  ctx.fillText("28–31 OCT 2026 / GOA, INDIA", width - border - 30, height - border - 45);
+  ctx.font = "500 20px 'Inter', sans-serif";
+  ctx.fillText("28–31 OCT 2026 / GOA, INDIA", width - border - 50, height - border - 55);
 }
 
 export async function renderBuilderCard(
@@ -172,107 +164,93 @@ export async function renderBuilderCard(
   canvas.width = width;
   canvas.height = height;
 
+  // Background
   ctx.fillStyle = BG_DARK;
   ctx.fillRect(0, 0, width, height);
 
-  // Header background block
-  ctx.fillStyle = BG_SECONDARY;
-  ctx.fillRect(0, 0, width, 140);
+  // Soft gradient mesh effect at the top
+  const bgGrad = ctx.createRadialGradient(width/2, -200, 100, width/2, 200, 800);
+  bgGrad.addColorStop(0, "rgba(255, 81, 47, 0.2)");
+  bgGrad.addColorStop(1, "transparent");
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, width, height);
 
+  // Header
   ctx.fillStyle = TEXT_WHITE;
-  ctx.font = "800 56px 'Oswald', sans-serif";
+  ctx.font = "800 64px 'Oswald', sans-serif";
   ctx.textAlign = "left";
   ctx.letterSpacing = "2px";
-  ctx.fillText("HACKER HOUSE GOA", 60, 95);
+  ctx.fillText("HACKER HOUSE GOA", 60, 100);
 
-  ctx.fillStyle = BRAND_ACCENT;
-  ctx.font = "bold 24px 'Space Grotesk', monospace";
+  ctx.fillStyle = createGoaGradient(ctx, 0, 0, width, 200);
+  ctx.font = "bold 28px 'Inter', sans-serif";
   ctx.textAlign = "right";
-  ctx.fillText("HHG_2026", width - 60, 90);
+  ctx.fillText("2026", width - 60, 95);
 
   // Draw Image Area
-  const imgY = 140;
-  const imgH = 720;
+  const imgY = 160;
+  const imgH = 680;
   if (imgUrl) {
     try {
       const img = await loadImage(imgUrl);
-      drawImageCenterCrop(ctx, img, 60, imgY + 40, width - 120, imgH);
+      drawImageCenterCrop(ctx, img, 60, imgY, width - 120, imgH);
     } catch (e) {
       console.error("Failed to load image for canvas", e);
     }
   } else {
-    ctx.fillStyle = BG_SECONDARY;
-    ctx.fillRect(60, imgY + 40, width - 120, imgH);
+    ctx.fillStyle = BG_CARD;
+    ctx.fillRect(60, imgY, width - 120, imgH);
   }
   
-  ctx.strokeStyle = TEXT_WHITE;
+  // Image Border
+  ctx.strokeStyle = "rgba(255,255,255,0.1)";
   ctx.lineWidth = 4;
-  ctx.strokeRect(60, imgY + 40, width - 120, imgH);
+  ctx.strokeRect(60, imgY, width - 120, imgH);
 
-  // Crosshairs around image
-  const chSize = 15;
-  drawCrosshair(ctx, 60, imgY + 40, chSize, BRAND_ACCENT);
-  drawCrosshair(ctx, width - 60, imgY + 40, chSize, BRAND_ACCENT);
-  drawCrosshair(ctx, 60, imgY + 40 + imgH, chSize, BRAND_ACCENT);
-  drawCrosshair(ctx, width - 60, imgY + 40 + imgH, chSize, BRAND_ACCENT);
+  const startY = imgY + imgH + 100;
 
-  // Signal indicator on image
-  ctx.fillStyle = BRAND_ACCENT;
-  ctx.fillRect(width - 240, imgY + 60, 160, 30);
-  ctx.fillStyle = BG_DARK;
-  ctx.font = "bold 16px 'Space Grotesk', monospace";
-  ctx.textAlign = "center";
-  ctx.fillText("SIGNAL: ACTIVE", width - 160, imgY + 80);
-
-  const startY = imgY + imgH + 110;
-
-  // Builder Class (from titleGenerator)
+  // Builder Class
   ctx.fillStyle = TEXT_CYAN;
-  ctx.font = "bold 22px 'Space Grotesk', monospace";
+  ctx.font = "bold 24px 'Inter', sans-serif";
   ctx.textAlign = "left";
-  ctx.letterSpacing = "2px";
-  ctx.fillText(userData.title || "BUILDER CLASS: 00 — THE UNKNOWN", 60, startY);
+  ctx.letterSpacing = "4px";
+  ctx.fillText(userData.title || "BUILDER CLASS: UNKNOWN", 60, startY);
 
   // Name
   ctx.fillStyle = TEXT_WHITE;
-  ctx.font = "700 84px 'Oswald', sans-serif";
+  ctx.font = "900 84px 'Oswald', sans-serif";
   ctx.letterSpacing = "1px";
   let name = (userData.name || "YOUR NAME").toUpperCase();
   ctx.fillText(name, 55, startY + 90);
 
   // Role
-  ctx.fillStyle = TEXT_MUTED;
-  ctx.font = "600 32px 'Inter', sans-serif";
+  ctx.fillStyle = BRAND_SECONDARY;
+  ctx.font = "600 36px 'Inter', sans-serif";
   ctx.fillText((userData.role || "ROLE / STACK").toUpperCase(), 60, startY + 150);
 
   // Tagline
   if (userData.tagline) {
     ctx.fillStyle = TEXT_WHITE;
-    ctx.font = "italic 24px 'Inter', sans-serif";
-    ctx.fillText(`"${userData.tagline}"`, 60, startY + 200);
+    ctx.font = "italic 28px 'Inter', sans-serif";
+    ctx.fillText(`"${userData.tagline}"`, 60, startY + 210);
   }
 
   // Right Side Metadata
   ctx.textAlign = "right";
   ctx.fillStyle = TEXT_WHITE;
-  ctx.font = "bold 26px 'Space Grotesk', monospace";
-  ctx.fillText("GOA, INDIA", width - 60, startY + 80);
+  ctx.font = "bold 28px 'Inter', sans-serif";
+  ctx.fillText("GOA, INDIA", width - 60, startY + 90);
   
   ctx.fillStyle = TEXT_MUTED;
-  ctx.font = "20px 'Space Grotesk', monospace";
-  ctx.fillText("28–31 OCT 2026", width - 60, startY + 120);
+  ctx.font = "24px 'Inter', sans-serif";
+  ctx.fillText("28–31 OCT 2026", width - 60, startY + 130);
 
-  ctx.fillStyle = BRAND_ACCENT;
-  ctx.fillText("AI × CRYPTO", width - 60, startY + 160);
-
-  // Barcode / Cryptographic Hash Deco
-  ctx.fillStyle = TEXT_WHITE;
+  // Modern Ticket Barcode
+  ctx.fillStyle = "rgba(255,255,255,0.2)";
   let barX = width - 60;
   for(let i = 0; i < 28; i++) {
     const barWidth = [2, 4, 1, 6, 8, 2, 4, 12, 1][i % 9];
     barX -= (barWidth + 4);
-    ctx.fillRect(barX, startY + 200, barWidth, 40);
+    ctx.fillRect(barX, startY + 180, barWidth, 40);
   }
 }
-
-
