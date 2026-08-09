@@ -44,7 +44,7 @@ export function UploadZone({ onImageSelected }: UploadZoneProps) {
   const getStatusText = () => {
     switch(processingState) {
       case "input": return "UPLOADING";
-      case "analyzing": return "ENHANCING";
+      case "analyzing": return "PROCESSING";
       case "detected": return "WARMING UP";
       case "ready": return "READY";
       default: return "";
@@ -52,13 +52,13 @@ export function UploadZone({ onImageSelected }: UploadZoneProps) {
   };
 
   return (
-    <div className="relative font-sans">
+    <div className="relative font-mono">
       <div
         {...getRootProps()}
-        className={`glass-panel relative transition-all duration-300 p-8 cursor-pointer overflow-hidden group border-2 border-dashed ${
+        className={`relative transition-all duration-300 p-8 cursor-pointer overflow-hidden group glass-panel rounded-2xl ${
           isDragActive 
-            ? "border-accent bg-accent/10" 
-            : "border-white/20 hover:border-accent/50 hover:bg-white/5"
+            ? "border-accent shadow-[0_0_30px_rgba(255,229,0,0.4)] bg-background/50" 
+            : "border-white/30 hover:border-accent hover:shadow-[0_0_20px_rgba(255,229,0,0.3)] bg-background/20"
         }`}
       >
         <input {...getInputProps()} />
@@ -72,18 +72,18 @@ export function UploadZone({ onImageSelected }: UploadZoneProps) {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center justify-center space-y-4 py-8"
             >
-              <div className="w-full max-w-[200px] h-2 bg-black/40 rounded-full relative overflow-hidden">
+              <div className="w-full max-w-[200px] h-3 bg-black/40 rounded-full relative overflow-hidden shadow-inner">
                 <motion.div 
-                  className="absolute top-0 bottom-0 left-0 goa-gradient w-1/3 rounded-full"
-                  animate={{ x: ["-100%", "300%"] }}
-                  transition={{ duration: 0.5, repeat: Infinity, ease: "linear" }}
+                  className="absolute top-0 bottom-0 left-0 goa-gradient w-1/2 rounded-full shadow-[0_0_10px_rgba(255,229,0,0.8)]"
+                  animate={{ x: ["-100%", "200%"] }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 />
               </div>
               <motion.p 
                 key={processingState}
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-accent text-sm tracking-wider uppercase font-bold"
+                className="text-accent text-sm tracking-widest uppercase font-bold text-outline drop-shadow-[0_0_5px_rgba(255,229,0,0.5)]"
               >
                 {getStatusText()}
               </motion.p>
@@ -96,20 +96,20 @@ export function UploadZone({ onImageSelected }: UploadZoneProps) {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center justify-center space-y-4 py-6"
             >
-              <div className={`p-4 rounded-full transition-colors ${isDragActive ? 'bg-accent/20 text-accent' : 'bg-black/30 text-white/70 group-hover:bg-accent/10 group-hover:text-accent'}`}>
-                <Upload className="w-8 h-8" />
+              <div className={`p-4 transition-colors ${isDragActive ? 'text-accent' : 'text-white group-hover:text-accent'}`}>
+                <Upload className="w-12 h-12 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] group-hover:drop-shadow-[0_0_15px_rgba(255,229,0,0.5)]" strokeWidth={2} />
               </div>
               
               <div className="text-center space-y-2">
-                <p className={`text-sm font-bold tracking-wider uppercase ${isDragActive ? 'text-accent' : 'text-white'}`}>
+                <p className={`text-lg font-bold tracking-wider uppercase transition-colors text-outline drop-shadow-md ${isDragActive ? 'text-accent' : 'text-white group-hover:text-accent'}`}>
                   {isDragActive ? "DROP PHOTO HERE" : "UPLOAD YOUR PHOTO"}
                 </p>
-                <p className="text-xs text-white/50 tracking-wider uppercase font-light">
+                <p className="text-sm text-white/70 tracking-wider font-bold">
                   JPG / PNG / WEBP / HEIC
                 </p>
               </div>
               
-              <div className="mt-4 px-6 py-2 rounded-full bg-white/5 border border-white/10 text-xs text-white/70 group-hover:border-accent/30 group-hover:text-white transition-colors uppercase tracking-widest">
+              <div className="mt-4 px-6 py-2 rounded-full border border-white/30 text-sm text-white font-bold group-hover:border-accent group-hover:text-accent transition-all uppercase tracking-widest">
                 Browse Files
               </div>
             </motion.div>

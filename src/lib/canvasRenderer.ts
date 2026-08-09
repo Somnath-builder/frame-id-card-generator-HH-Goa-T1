@@ -41,30 +41,46 @@ function drawImageCenterCrop(
     srcY = (img.height - srcH) / 2;
   }
 
-  // Draw image in full natural color
+  // Draw image
   ctx.save();
-  // Optional: add a slight warmth to the photo using a very soft overlay
   ctx.drawImage(img, srcX, srcY, srcW, srcH, x, y, w, h);
-  ctx.fillStyle = "rgba(255, 142, 83, 0.05)"; // extremely subtle warm tint
+  
+  // Add a tropical warm/yellow overlay to the photo to blend it with the retro sunset theme
+  ctx.fillStyle = "rgba(255, 229, 0, 0.1)"; 
   ctx.globalCompositeOperation = "overlay";
   ctx.fillRect(x, y, w, h);
   ctx.restore();
 }
 
-// Sunset / Ocean Palette
-const BRAND_ACCENT = "#FF512F"; // Sunset Orange
-const BRAND_SECONDARY = "#F09819"; // Warm Yellow
-const BG_DARK = "#0B0914"; // Deep Twilight
-const BG_CARD = "#161224"; // Glass Panel Background
-const TEXT_WHITE = "#F8F9FA";
-const TEXT_MUTED = "#A09DB0";
-const TEXT_CYAN = "#48CAE4"; // Ocean Cyan
+// Retro Sunset Palette
+const BG_GREEN = "#0E793C";
+const BRAND_YELLOW = "#FFE500";
+const BRAND_PINK = "#FF007A";
+const TEXT_WHITE = "#FFFFFF";
+
+const FONT_DISPLAY = "'Bodoni Moda', serif";
+const FONT_MONO = "'Space Mono', monospace";
 
 function createGoaGradient(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
   const grad = ctx.createLinearGradient(x, y, x + w, y + h);
-  grad.addColorStop(0, BRAND_ACCENT);
-  grad.addColorStop(1, BRAND_SECONDARY);
+  grad.addColorStop(0, BRAND_YELLOW);
+  grad.addColorStop(1, BRAND_PINK);
   return grad;
+}
+
+// Polyfill for roundRect if needed, but modern browsers support it
+function roundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
 }
 
 export async function renderPfpFrame(
@@ -79,10 +95,20 @@ export async function renderPfpFrame(
   canvas.width = width;
   canvas.height = height;
 
-  ctx.fillStyle = BG_DARK;
+  // Background
+  ctx.fillStyle = BG_GREEN;
   ctx.fillRect(0, 0, width, height);
 
-  const border = 60;
+  // Soft glowing mesh effect
+  const bgGrad = ctx.createRadialGradient(width/2, height/2, 100, width/2, height/2, 800);
+  bgGrad.addColorStop(0, "rgba(255, 229, 0, 0.3)");
+  bgGrad.addColorStop(1, "transparent");
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, width, height);
+
+  const border = 40;
+  const footerHeight = 220;
+  
   if (imgUrl) {
     try {
       const img = await loadImage(imgUrl);
@@ -92,63 +118,67 @@ export async function renderPfpFrame(
         border,
         border,
         width - border * 2,
-        height - border * 2
+        height - border * 2 - footerHeight + border
       );
     } catch (e) {
       console.error("Failed to load image for canvas", e);
     }
   }
 
-  // Soft glowing border instead of stark lines
+  // Draw glowing gradient frame border around the image
   ctx.strokeStyle = createGoaGradient(ctx, border, border, width, height);
-  ctx.lineWidth = 12;
+  ctx.lineWidth = 16;
   ctx.lineJoin = "round";
-  ctx.shadowColor = BRAND_ACCENT;
-  ctx.shadowBlur = 20;
-  ctx.strokeRect(border, border, width - border * 2, height - border * 2);
+  ctx.shadowColor = BRAND_YELLOW;
+  ctx.shadowBlur = 15;
+  ctx.strokeRect(border, border, width - border * 2, height - border * 2 - footerHeight + border);
   
   // Reset shadow
   ctx.shadowBlur = 0;
 
-  // Modern soft corner accents
-  ctx.fillStyle = TEXT_WHITE;
-  const corners = [
-    [border, border],
-    [width - border, border],
-    [border, height - border],
-    [width - border, height - border]
-  ];
+  // Bottom Branding Box (Translucent Glass Panel)
+  const footerY = height - footerHeight;
+  ctx.fillStyle = "rgba(14, 121, 60, 0.7)";
+  ctx.fillRect(0, footerY, width, footerHeight);
   
-  corners.forEach(([cx, cy]) => {
-    ctx.beginPath();
-    ctx.arc(cx, cy, 16, 0, Math.PI * 2);
-    ctx.fill();
-  });
+  // Top gradient border for the glass footer
+  ctx.fillStyle = createGoaGradient(ctx, 0, footerY, width, 10);
+  ctx.fillRect(border, footerY + 20, width - border * 2, 6);
 
-  // Subtle Goa coordinates top right
-  ctx.fillStyle = TEXT_WHITE;
-  ctx.font = "bold 18px 'Inter', sans-serif";
-  ctx.textAlign = "right";
-  ctx.fillText("15°29′N / 73°49′E", width - border - 30, border + 40);
-
-  // Bottom Branding Glass Box
-  ctx.fillStyle = "rgba(22, 18, 36, 0.85)"; // Translucent card
-  ctx.fillRect(border + 20, height - border - 160, width - border * 2 - 40, 140);
-  
-  ctx.fillStyle = TEXT_WHITE;
-  ctx.font = "800 76px 'Oswald', sans-serif";
+  // Main Display Text (Glowing)
+  ctx.fillStyle = BRAND_YELLOW;
+  ctx.shadowColor = "rgba(0,0,0,0.5)";
+  ctx.shadowBlur = 4;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 2;
+  ctx.font = `800 120px ${FONT_DISPLAY}`;
   ctx.textAlign = "left";
-  ctx.letterSpacing = "2px";
-  ctx.fillText("HH GOA 2026", border + 50, height - border - 60);
-
-  ctx.fillStyle = createGoaGradient(ctx, border, border, width, height);
-  ctx.font = "bold 26px 'Inter', sans-serif";
-  ctx.textAlign = "right";
-  ctx.fillText("AI × CRYPTO × BUILDERS", width - border - 50, height - border - 90);
+  ctx.fillText("HACKER HOUSE", border + 10, footerY + 140);
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
   
-  ctx.fillStyle = TEXT_MUTED;
-  ctx.font = "500 20px 'Inter', sans-serif";
-  ctx.fillText("28–31 OCT 2026 / GOA, INDIA", width - border - 50, height - border - 55);
+  // Pink overlapping text
+  ctx.save();
+  ctx.translate(border + 600, footerY + 90);
+  ctx.rotate(-5 * Math.PI / 180);
+  ctx.fillStyle = BRAND_PINK;
+  roundedRect(ctx, -20, -50, 140, 65, 8);
+  ctx.fill();
+  ctx.fillStyle = TEXT_WHITE;
+  ctx.font = `900 40px ${FONT_DISPLAY}`;
+  ctx.textAlign = "center";
+  ctx.fillText("गोआ", 50, -5);
+  ctx.restore();
+
+  // Bottom Metadata
+  ctx.fillStyle = BRAND_YELLOW;
+  ctx.font = `bold 24px ${FONT_MONO}`;
+  ctx.textAlign = "left";
+  ctx.fillText("GOA, INDIA · 28-31 OCT 2026", border + 10, footerY + 190);
+
+  ctx.textAlign = "right";
+  ctx.fillText("2:47 PM STUDIO", width - border - 10, footerY + 190);
 }
 
 export async function renderBuilderCard(
@@ -165,92 +195,117 @@ export async function renderBuilderCard(
   canvas.height = height;
 
   // Background
-  ctx.fillStyle = BG_DARK;
+  ctx.fillStyle = BG_GREEN;
   ctx.fillRect(0, 0, width, height);
 
   // Soft gradient mesh effect at the top
   const bgGrad = ctx.createRadialGradient(width/2, -200, 100, width/2, 200, 800);
-  bgGrad.addColorStop(0, "rgba(255, 81, 47, 0.2)");
+  bgGrad.addColorStop(0, "rgba(255, 229, 0, 0.4)");
   bgGrad.addColorStop(1, "transparent");
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, width, height);
 
-  // Header
-  ctx.fillStyle = TEXT_WHITE;
-  ctx.font = "800 64px 'Oswald', sans-serif";
-  ctx.textAlign = "left";
-  ctx.letterSpacing = "2px";
-  ctx.fillText("HACKER HOUSE GOA", 60, 100);
+  // Decorative Waves at the top (Gradient strokes)
+  ctx.strokeStyle = createGoaGradient(ctx, 0, 0, width, 200);
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(0, 50);
+  ctx.bezierCurveTo(200, -20, 300, 120, 540, 50);
+  ctx.bezierCurveTo(780, -20, 880, 120, 1080, 50);
+  ctx.stroke();
 
-  ctx.fillStyle = createGoaGradient(ctx, 0, 0, width, 200);
-  ctx.font = "bold 28px 'Inter', sans-serif";
-  ctx.textAlign = "right";
-  ctx.fillText("2026", width - 60, 95);
+  ctx.beginPath();
+  ctx.moveTo(0, 80);
+  ctx.bezierCurveTo(200, 10, 300, 150, 540, 80);
+  ctx.bezierCurveTo(780, 10, 880, 150, 1080, 80);
+  ctx.stroke();
 
-  // Draw Image Area
-  const imgY = 160;
-  const imgH = 680;
+  // Header Box (Glassy Green)
+  ctx.fillStyle = "rgba(14, 121, 60, 0.6)";
+  ctx.fillRect(0, 140, width, 140);
+  
+  // Pink/Yellow gradient borders on header box
+  ctx.fillStyle = createGoaGradient(ctx, 0, 0, width, 10);
+  ctx.fillRect(0, 130, width, 10);
+  ctx.fillRect(0, 280, width, 10);
+
+  // Header Text
+  ctx.fillStyle = BRAND_YELLOW;
+  ctx.shadowColor = "rgba(0,0,0,0.5)";
+  ctx.shadowBlur = 4;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 2;
+  ctx.font = `800 90px ${FONT_DISPLAY}`;
+  ctx.textAlign = "center";
+  ctx.fillText("HACKER HOUSE", width / 2, 240);
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+
+  // Draw Image Area (Rounded Corners, Glowing Border)
+  const imgY = 340;
+  const imgH = 500;
+  const imgW = 700;
+  const imgX = (width - imgW) / 2;
+  
+  ctx.save();
+  roundedRect(ctx, imgX, imgY, imgW, imgH, 20);
+  ctx.clip();
+  
   if (imgUrl) {
     try {
       const img = await loadImage(imgUrl);
-      drawImageCenterCrop(ctx, img, 60, imgY, width - 120, imgH);
+      drawImageCenterCrop(ctx, img, imgX, imgY, imgW, imgH);
     } catch (e) {
       console.error("Failed to load image for canvas", e);
     }
   } else {
-    ctx.fillStyle = BG_CARD;
-    ctx.fillRect(60, imgY, width - 120, imgH);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
+    ctx.fillRect(imgX, imgY, imgW, imgH);
   }
+  ctx.restore();
   
   // Image Border
-  ctx.strokeStyle = "rgba(255,255,255,0.1)";
-  ctx.lineWidth = 4;
-  ctx.strokeRect(60, imgY, width - 120, imgH);
+  ctx.strokeStyle = createGoaGradient(ctx, imgX, imgY, imgW, imgH);
+  ctx.lineWidth = 8;
+  ctx.shadowColor = BRAND_YELLOW;
+  ctx.shadowBlur = 20;
+  roundedRect(ctx, imgX, imgY, imgW, imgH, 20);
+  ctx.stroke();
+  ctx.shadowBlur = 0;
 
   const startY = imgY + imgH + 100;
 
   // Builder Class
-  ctx.fillStyle = TEXT_CYAN;
-  ctx.font = "bold 24px 'Inter', sans-serif";
+  ctx.fillStyle = BRAND_YELLOW;
+  ctx.font = `bold 24px ${FONT_MONO}`;
   ctx.textAlign = "left";
-  ctx.letterSpacing = "4px";
-  ctx.fillText(userData.title || "BUILDER CLASS: UNKNOWN", 60, startY);
+  ctx.fillText(userData.title || "BUILDER CLASS: UNKNOWN", imgX, startY);
 
-  // Name
+  // Name (Massive Serif)
   ctx.fillStyle = TEXT_WHITE;
-  ctx.font = "900 84px 'Oswald', sans-serif";
-  ctx.letterSpacing = "1px";
+  ctx.font = `900 100px ${FONT_DISPLAY}`;
   let name = (userData.name || "YOUR NAME").toUpperCase();
-  ctx.fillText(name, 55, startY + 90);
+  ctx.fillText(name, imgX - 5, startY + 110);
 
-  // Role
-  ctx.fillStyle = BRAND_SECONDARY;
-  ctx.font = "600 36px 'Inter', sans-serif";
-  ctx.fillText((userData.role || "ROLE / STACK").toUpperCase(), 60, startY + 150);
+  // Role (Pink block, rounded)
+  ctx.fillStyle = BRAND_PINK;
+  roundedRect(ctx, imgX, startY + 150, imgW, 60, 12);
+  ctx.fill();
+  ctx.fillStyle = TEXT_WHITE;
+  ctx.font = `bold 32px ${FONT_MONO}`;
+  ctx.fillText((userData.role || "ROLE / STACK").toUpperCase(), imgX + 20, startY + 192);
 
   // Tagline
   if (userData.tagline) {
-    ctx.fillStyle = TEXT_WHITE;
-    ctx.font = "italic 28px 'Inter', sans-serif";
-    ctx.fillText(`"${userData.tagline}"`, 60, startY + 210);
+    ctx.fillStyle = BRAND_YELLOW;
+    ctx.font = `italic 32px ${FONT_DISPLAY}`;
+    ctx.fillText(`"${userData.tagline}"`, imgX, startY + 280);
   }
 
-  // Right Side Metadata
-  ctx.textAlign = "right";
+  // Footer text
+  ctx.textAlign = "center";
   ctx.fillStyle = TEXT_WHITE;
-  ctx.font = "bold 28px 'Inter', sans-serif";
-  ctx.fillText("GOA, INDIA", width - 60, startY + 90);
-  
-  ctx.fillStyle = TEXT_MUTED;
-  ctx.font = "24px 'Inter', sans-serif";
-  ctx.fillText("28–31 OCT 2026", width - 60, startY + 130);
-
-  // Modern Ticket Barcode
-  ctx.fillStyle = "rgba(255,255,255,0.2)";
-  let barX = width - 60;
-  for(let i = 0; i < 28; i++) {
-    const barWidth = [2, 4, 1, 6, 8, 2, 4, 12, 1][i % 9];
-    barX -= (barWidth + 4);
-    ctx.fillRect(barX, startY + 180, barWidth, 40);
-  }
+  ctx.font = `bold 24px ${FONT_MONO}`;
+  ctx.fillText("GOA, INDIA / 28–31 OCT 2026", width / 2, height - 60);
 }

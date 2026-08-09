@@ -27,13 +27,13 @@ export const PreviewCanvas = forwardRef<HTMLCanvasElement, PreviewCanvasProps>(
     return (
       <div className="relative font-mono w-full">
         <div className="flex items-center gap-2 mb-6 text-center justify-center">
-          <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-          <h3 className="text-xs font-bold text-white/70 uppercase tracking-widest">
+          <div className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-[0_0_10px_rgba(255,229,0,0.8)]" />
+          <h3 className="text-xs font-bold text-accent uppercase tracking-widest text-outline drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">
             Live Preview
           </h3>
         </div>
         
-        <div className="relative glass-panel p-2 sm:p-4 group">
+        <div className="relative glass-panel rounded-2xl p-2 sm:p-4 group">
           
           {/* UI-Only Scanning Line */}
           {imgUrl && (

@@ -85,7 +85,7 @@ export default function Home() {
               transition={{ duration: 2, ease: "easeOut" }}
               className="absolute w-64 h-64 rounded-full pointer-events-none"
               style={{
-                background: "radial-gradient(circle, rgba(255,81,47,0.8) 0%, rgba(255,81,47,0) 70%)"
+                background: "radial-gradient(circle, rgba(255,229,0,0.8) 0%, rgba(255,0,122,0) 70%)"
               }}
             />
             
@@ -96,10 +96,12 @@ export default function Home() {
               transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
               className="font-sans text-center space-y-4 relative z-10"
             >
-              <h2 className="text-5xl md:text-7xl font-display font-black tracking-tight goa-gradient-text uppercase">
+              <h2 className="text-5xl md:text-7xl font-display font-black tracking-tight goa-gradient-text uppercase drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]">
                 IDENTITY LOCKED
               </h2>
-              <p className="text-xl md:text-2xl font-light tracking-[0.2em] text-white">See you in Goa.</p>
+              <p className="text-xl md:text-2xl font-bold tracking-[0.2em] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                See you in Goa.
+              </p>
             </motion.div>
           </motion.div>
         )}
@@ -138,10 +140,10 @@ export default function Home() {
                 >
                   <button
                     onClick={handleLockSignal}
-                    className="w-full goa-gradient text-white font-bold uppercase tracking-widest py-5 px-6 rounded-2xl hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(255,81,47,0.3)] hover:shadow-[0_10px_40px_rgba(255,81,47,0.5)] group"
+                    className="w-full goa-gradient text-background font-black text-lg uppercase tracking-widest py-5 px-6 rounded-2xl hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(255,229,0,0.4)] hover:shadow-[0_10px_40px_rgba(255,229,0,0.6)] group border border-white/40"
                   >
                     <Lock className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                    LOCK IDENTITY
+                    GENERATE TICKET
                   </button>
                 </motion.div>
               )}
@@ -152,20 +154,20 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   className="pt-4 space-y-4"
                 >
-                  <div className="text-center font-sans font-light text-white/70 text-sm tracking-widest mb-4 uppercase">
+                  <div className="text-center font-mono font-bold text-white text-sm tracking-widest mb-4 uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                     Your Goa Identity is ready.
                   </div>
                   <div className="flex flex-col sm:flex-row gap-4">
                     <button
                       onClick={handleDownload}
-                      className="flex-1 bg-white text-black font-bold uppercase tracking-widest py-4 px-6 rounded-2xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 shadow-lg"
+                      className="flex-1 bg-white text-background font-bold uppercase tracking-widest py-4 px-6 rounded-2xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 shadow-[0_4px_15px_rgba(0,0,0,0.3)] border border-white/40"
                     >
                       <Download className="w-5 h-5" />
                       DOWNLOAD
                     </button>
                     <button
                       onClick={handleShare}
-                      className="flex-1 glass-panel text-white font-bold uppercase tracking-widest py-4 px-6 rounded-2xl hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
+                      className="flex-1 glass-panel text-white font-bold uppercase tracking-widest py-4 px-6 rounded-2xl hover:bg-white/20 transition-colors flex items-center justify-center gap-2 shadow-[0_4px_15px_rgba(0,0,0,0.3)] border border-white/40"
                     >
                       <Share2 className="w-5 h-5" />
                       SHARE ON X
