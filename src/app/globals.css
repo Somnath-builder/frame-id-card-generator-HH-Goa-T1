@@ -1,16 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050505;
+  --background: #030303;
+  --background-secondary: #0a0a0a;
+  
   --foreground: #f4f4f5;
   
-  --accent: #ff4a00;
-  --accent-foreground: #ffffff;
+  --accent: #00ff41;
+  --accent-foreground: #000000;
 
-  --muted: #171717;
-  --muted-foreground: #a1a1aa;
+  --cyan: #00e5ff;
+  --sand: #e6d5c3;
 
-  --border: #27272a;
+  --muted: #111111;
+  --muted-foreground: #888888;
+
+  --border: #333333;
 }
 
 @theme inline {
@@ -21,18 +26,24 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
+  --color-cyan: var(--cyan);
+  --color-sand: var(--sand);
 
   --font-sans: var(--font-inter);
   --font-mono: var(--font-space-grotesk);
+  --font-display: var(--font-oswald);
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 64px 64px;
-  background-position: center top;
 }
+
+/* Hide default cursor on devices with fine pointer (desktop) */
+@media (pointer: fine) {
+  body, a, button, input, select, textarea, [role="button"] {
+    cursor: none !important;
+  }
+}
+

@@ -1,82 +1,41 @@
 export const ROLES = [
-  "AI / ML",
-  "FULL STACK",
-  "WEB3",
-  "FRONTEND",
-  "BACKEND",
-  "BLOCKCHAIN",
-  "AI + WEB3",
-  "DESIGN",
+  "SOFTWARE ENGINEER",
+  "FRONTEND DEVELOPER",
+  "BACKEND DEVELOPER",
+  "FULL STACK DEVELOPER",
+  "WEB3 DEVELOPER",
+  "UI/UX DESIGNER",
+  "PRODUCT MANAGER",
+  "FOUNDER",
+  "RESEARCHER",
   "OTHER"
 ] as const;
 
 export type Role = typeof ROLES[number];
 
-const ROLE_TITLES: Record<Role, string[]> = {
-  "AI / ML": [
-    "THE MODEL WHISPERER",
-    "THE MACHINE BUILDER",
-    "THE INTELLIGENCE ARCHITECT"
-  ],
-  "FULL STACK": [
-    "THE SYSTEM ARCHITECT",
-    "THE PRODUCT SHIPPER",
-    "THE FULL-STACK BUILDER"
-  ],
-  "WEB3": [
-    "THE PROTOCOL ARCHITECT",
-    "THE CHAIN BUILDER",
-    "THE ON-CHAIN ENGINEER"
-  ],
-  "FRONTEND": [
-    "THE INTERFACE ARCHITECT",
-    "THE PIXEL SHIPPER",
-    "THE EXPERIENCE CRAFTER"
-  ],
-  "BACKEND": [
-    "THE INFRASTRUCTURE BUILDER",
-    "THE SYSTEM ENGINEER",
-    "THE DATA ARCHITECT"
-  ],
-  "BLOCKCHAIN": [
-    "THE PROTOCOL BUILDER",
-    "THE CHAIN ARCHITECT",
-    "THE SMART CONTRACTOR"
-  ],
-  "AI + WEB3": [
-    "THE PROTOCOL ALCHEMIST",
-    "THE INTELLIGENCE ARCHITECT",
-    "THE DECENTRALIZED MIND"
-  ],
-  "DESIGN": [
-    "THE EXPERIENCE ARCHITECT",
-    "THE VISUAL BUILDER",
-    "THE AESTHETIC ENGINEER"
-  ],
-  "OTHER": [
-    "THE BUILDER",
-    "THE SHIPPER",
-    "THE ARCHITECT",
-    "THE CREATOR"
-  ]
-};
+const TITLES = [
+  "BUILDER CLASS: 01 — THE SHIPPER",
+  "BUILDER CLASS: 02 — THE ARCHITECT",
+  "BUILDER CLASS: 03 — THE PROTOCOL BUILDER",
+  "BUILDER CLASS: 04 — THE MACHINE WHISPERER",
+  "BUILDER CLASS: 05 — THE INTERFACE HACKER",
+  "BUILDER CLASS: 06 — THE SYSTEM BREAKER",
+  "BUILDER CLASS: 07 — THE PRODUCT ALCHEMIST",
+  "BUILDER CLASS: 08 — THE SIGNAL ENGINEER",
+  "BUILDER CLASS: 09 — THE CHAIN BUILDER"
+];
 
-// Deterministic title generation based on user's name to keep it consistent
+// Deterministic title generation based on user's name
 export function generateTitle(name: string, role: string): string {
-  if (!name) name = "Builder";
+  const input = `${name.trim().toLowerCase()}-${role.trim().toLowerCase()}`;
+  if (!input || input === "-") return "BUILDER CLASS: 00 — THE UNKNOWN";
   
-  // Try to find the exact role, otherwise fallback to "OTHER"
-  const mappedRole = ROLES.includes(role as Role) ? (role as Role) : "OTHER";
-  
-  const possibleTitles = ROLE_TITLES[mappedRole] || ROLE_TITLES["OTHER"];
-  
-  // Simple deterministic hash based on name
   let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  for (let i = 0; i < input.length; i++) {
+    hash = (hash << 5) - hash + input.charCodeAt(i);
+    hash |= 0;
   }
   
-  const index = Math.abs(hash) % possibleTitles.length;
-  
-  return possibleTitles[index];
+  const index = Math.abs(hash) % TITLES.length;
+  return TITLES[index];
 }
