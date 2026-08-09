@@ -27,8 +27,8 @@ export function Hero() {
         <div className="relative w-full flex justify-center items-center my-8">
           {/* Glowing Aura behind text */}
           <motion.div
-            className="absolute top-1/2 left-1/2 w-3/4 h-3/4 bg-accent/30 rounded-full blur-[60px] -translate-x-1/2 -translate-y-1/2 -z-10"
-            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+            className="absolute top-1/2 left-1/2 w-3/4 h-3/4 bg-accent/10 rounded-full blur-[60px] -translate-x-1/2 -translate-y-1/2 -z-10"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           />
 

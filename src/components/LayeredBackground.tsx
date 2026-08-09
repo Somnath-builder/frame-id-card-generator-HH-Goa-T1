@@ -8,7 +8,7 @@ export function LayeredBackground() {
       
       {/* 1. Fluid Retro Gradient Mesh (Green to Yellow) */}
       <motion.div
-        className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] opacity-80"
+        className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] opacity-30"
         style={{
           background: "radial-gradient(circle at center, var(--accent) 0%, transparent 50%), radial-gradient(circle at 20% 80%, var(--pink) 0%, transparent 40%)",
           filter: "blur(80px)",
@@ -22,7 +22,7 @@ export function LayeredBackground() {
       
       {/* 2. Fluid Yellow/White Ocean Waves */}
       <motion.div
-        className="absolute inset-0 flex items-end justify-center mix-blend-overlay opacity-60"
+        className="absolute inset-0 flex items-end justify-center mix-blend-overlay opacity-50"
       >
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-[50vh]">
           {/* Wave 1 */}
