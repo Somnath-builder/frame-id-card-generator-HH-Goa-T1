@@ -1,32 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 @import "tailwindcss";
 
 :root {
-  /* Official HH Goa Flat Palette */
-  --background: #0E793C; /* Forest Green */
-  --foreground: #FFFFFF;
+  /* Dark Tropical Night */
+  --background: #0B0914;
+  --background-secondary: #161224;
   
-  --accent: #FFE500; /* Bright Yellow */
-  --accent-foreground: #000000;
-
-  --pink: #FF007A; /* Hot Pink */
+  --foreground: #F8F9FA;
   
-  --card: #0E793C;
-  --card-foreground: #FFFFFF;
+  /* Sunset Orange / Tropical Pink */
+  --accent: #FF512F;
+  --accent-foreground: #FFFFFF;
 
-  --popover: #0E793C;
-  --popover-foreground: #FFFFFF;
+  --cyan: #48CAE4;
+  --sand: #F09819;
 
-  --primary: #FFE500;
-  --primary-foreground: #000000;
+  --muted: #1A162B;
+  --muted-foreground: #A09DB0;
 
-  --secondary: #FF007A;
-  --secondary-foreground: #FFFFFF;
-
-  --muted: #0A5E2E; /* Darker Green */
-  --muted-foreground: #FFE500;
-
-  --border: #FFFFFF;
+  --border: #2A2440;
 }
 
 @theme inline {
@@ -34,67 +25,62 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --color-pink: var(--pink);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
+  --color-cyan: var(--cyan);
+  --color-sand: var(--sand);
 
-  --font-sans: 'Space Mono', monospace; /* Using monospace as the body font for that retro tech feel */
-  --font-mono: 'Space Mono', monospace;
-  --font-display: 'Bodoni Moda', serif; /* Tall elegant serif */
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-space-grotesk);
+  --font-display: var(--font-oswald);
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
+  font-family: var(--font-sans), sans-serif;
+  font-feature-settings: "rlig" 1, "calt" 1;
 }
 
-/* Hide default cursor on desktop */
-@media (pointer: fine) {
-  * {
-    cursor: auto;
-  }
+/* Modern scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 @layer utilities {
-  .retro-border {
-    border: 2px solid rgba(255, 255, 255, 0.4);
+  .text-glow {
+    text-shadow: 0 0 20px rgba(255, 81, 47, 0.5);
   }
   
-  .retro-border-yellow {
-    border: 2px solid var(--accent);
-  }
-  
-  .retro-border-pink {
-    border: 2px solid var(--pink);
-  }
-  
-  .text-outline {
-    text-shadow: 
-      -1px -1px 0 rgba(14, 121, 60, 0.5),
-       1px -1px 0 rgba(14, 121, 60, 0.5),
-      -1px  1px 0 rgba(14, 121, 60, 0.5),
-       1px  1px 0 rgba(14, 121, 60, 0.5);
-  }
-
   .glass-panel {
-    background: rgba(14, 121, 60, 0.4);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 229, 0, 0.3);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    background: rgba(22, 18, 36, 0.6);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   }
-
+  
   .goa-gradient {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--pink) 100%);
+    background: linear-gradient(135deg, #FF512F 0%, #F09819 100%);
   }
-
+  
   .goa-gradient-text {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--pink) 100%);
+    background: linear-gradient(135deg, #FF512F 0%, #F09819 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 }
+
+
